@@ -34,6 +34,7 @@ internal class LogListJsonParserV2 : LogListJsonParser {
     override fun parseJson(logListJson: String): LogListResult {
         val logList = try {
             GsonBuilder().setLenient().create().fromJson(logListJson, LogListV2::class.java)
+                ?: throw JsonParseException("No log list data provided")
         } catch (e: JsonParseException) {
             return LogListJsonBadFormat(e)
         }

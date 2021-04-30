@@ -26,6 +26,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
+import kotlin.random.Random
 
 class LogListJsonParserV2Test {
 
@@ -40,6 +41,58 @@ class LogListJsonParserV2Test {
         require(result is LogListResult.Valid)
         assertEquals(41, result.servers.size)
         assertEquals("Y/Lbzeg7zCzPC3KEJ1drM6SNYXePvXWmOLHHaFRL2I0=", Base64.toBase64String(result.servers[0].id))
+    }
+
+    @Test
+    fun `returns Invalid if json incomplete 2`() = runBlocking {
+        // given we have an incomplete json file
+
+        json.indices.forEach { i ->
+            println(i)
+            if (i != 0) {
+                // when we parse the data
+                val result = LogListJsonParserV2().parseJson(json.substring(0, i))
+
+                // then invalid is returned
+                assertIsA<LogListJsonBadFormat>(result)
+            }
+        }
+    }
+
+    @Test
+    fun `returns Invalid if json empty`(): Unit = runBlocking {
+        // when we parse empty data
+        val result = LogListJsonParserV2().parseJson("")
+
+        // then invalid is returned
+        assertIsA<LogListJsonBadFormat>(result)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    public fun <T> nullable(): T = null as T
+
+    private val chars = "abcdefghijklmnopqrstuvwxyzQWERTYUIOPASDFGHJKLZXCVBNM,.[]{}()"
+
+    @Test
+    public fun `returns Invalid if json incomplete null`(): Unit = runBlocking {
+        // given we have an incomplete json file
+
+        repeat(40000) {
+
+            // when we parse the data
+            val word = CharArray(Random.nextInt(0, 5000)) { chars[Random.nextInt(chars.length)] }.joinToString("")
+            //println(word)
+
+            try {
+                val result = LogListJsonParserV2().parseJson(word)
+
+                // then invalid is returned
+                assertIsA<LogListJsonBadFormat>(result)
+            } catch (expected: Exception) {
+                println(word)
+                throw expected
+            }
+        }
     }
 
     @Test
