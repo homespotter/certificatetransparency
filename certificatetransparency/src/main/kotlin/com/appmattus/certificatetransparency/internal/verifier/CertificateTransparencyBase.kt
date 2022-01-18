@@ -92,7 +92,11 @@ internal open class CertificateTransparencyBase(
             if (cleanedCerts.isEmpty()) {
                 VerificationResult.Failure.NoCertificates
             } else {
-                hasValidSignedCertificateTimestamp(cleanedCerts)
+                try {
+                    hasValidSignedCertificateTimestamp(cleanedCerts)
+                } catch (e: InterruptedException) {
+                    VerificationResult.Failure.LogServersFailed(NoLogServers)
+                }
             }
         }
     }
