@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java-library")
     id("kotlin")
-    id("org.owasp.dependencycheck")
+//    id("org.owasp.dependencycheck")
     id("com.android.lint")
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.dokka")
@@ -47,22 +47,22 @@ tasks.withType(KotlinCompile::class.java).all {
     }
 }
 
-dependencyCheck {
-    failBuildOnCVSS = 0f
-
-    suppressionFile = file("cve-suppressions.xml").toString()
-
-    analyzers.assemblyEnabled = false
-
-    skipConfigurations = listOf("lintClassPath", "jacocoAgent", "jacocoAnt", "kotlinCompilerClasspath", "kotlinCompilerPluginClasspath")
-}
+//dependencyCheck {
+//    failBuildOnCVSS = 0f
+//
+//    suppressionFile = file("cve-suppressions.xml").toString()
+//
+//    analyzers.assemblyEnabled = false
+//
+//    skipConfigurations = listOf("lintClassPath", "jacocoAgent", "jacocoAnt", "kotlinCompilerClasspath", "kotlinCompilerPluginClasspath")
+//}
 
 lintOptions {
     isAbortOnError = true
     isWarningsAsErrors = true
 }
 
-tasks.getByName("check").dependsOn(tasks.dependencyCheckAnalyze)
+//tasks.getByName("check").dependsOn(tasks.dependencyCheckAnalyze)
 tasks.named("check") {
     finalizedBy(rootProject.tasks.named("detekt"))
 }
